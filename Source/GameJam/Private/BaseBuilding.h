@@ -8,6 +8,8 @@
 #include "DebugPlayer.h"
 #include "Cash.h"
 #include "Pollution.h"
+#include "CustomGameInstance.h"
+#include "Particles/ParticleSystemComponent.h"
 #include "BaseBuilding.generated.h"
 
 
@@ -23,7 +25,9 @@ public:
 	ABaseBuilding();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UStaticMeshComponent* gruen;
+		UStaticMeshComponent* gruen = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UParticleSystemComponent* dust = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UCash* cashComp;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -42,6 +46,7 @@ public:
 		EBuildingState state;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		ADebugPlayer* player;
+
 
 
 public:

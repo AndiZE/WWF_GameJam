@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
+#include "BuildingState.h"
 #include "Cash.h"
 
 // Sets default values for this component's properties
@@ -13,22 +13,36 @@ UCash::UCash()
 	// ...
 }
 
-
-// Called when the game starts
-void UCash::BeginPlay()
+const int UCash::GetIncome(const EBuildingState State)
 {
-	Super::BeginPlay();
-
-	// ...
-	
+	int income = 0;
+	switch (State)
+	{
+	case EBuildingState::Green:
+		income = incomeClean;
+		break;
+	case EBuildingState::Dirty:
+		income = incomeDirty;
+		break;
+	case EBuildingState::Abbandoned:
+		income = incomeAbbandoned;
+		break;
+	}
+	return income;
 }
 
-
-// Called every frame
-void UCash::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UCash::UpgradeBuilding()
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	if (!upgradeActive) {
+	
+		upgradeActive = true;
+		GetWorld()->GetTimerManager().SetTimer(upgradeTimer, this, &UCash::UpgradeFinished, upgradeDuration, false);
+	}
+}
 
-	// ...
+void UCash::UpgradeFinished()
+{
+	upgradeActive = true;
+	OnUpgradeFinished.Broadcast();
 }
 

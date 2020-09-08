@@ -6,23 +6,42 @@
 #include "Components/ActorComponent.h"
 #include "Cash.generated.h"
 
+enum class EBuildingState :uint8;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FSampleDelegate);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class UCash : public UActorComponent
 {
 	GENERATED_BODY()
 
+public:
+	int incomeClean;
+	float upgradeDuration;
+	int upgradeCost;
+	int incomeDirty;
+	int incomeAbbandoned;
+	UPROPERTY(BlueprintAssignable)
+		FSampleDelegate OnUpgradeFinished;
+private:
+	bool upgradeActive;
+	FTimerHandle upgradeTimer;
+
+
 public:	
 	// Sets default values for this component's properties
 	UCash();
 
-protected:
-	// Called when the game starts
-	virtual void BeginPlay() override;
+	const int GetIncome(const EBuildingState State);
+	void UpgradeBuilding();
 
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	const bool IsUpgrading() {
+		return upgradeActive;
+	}
+	const int GetUpgradeCost() {
+		return upgradeCost;
+	}
 
-		
+private:
+	void UpgradeFinished();
 };

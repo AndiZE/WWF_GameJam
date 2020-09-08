@@ -32,3 +32,20 @@ void ADebugPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 }
 
+void ADebugPlayer::AddCash(int Cash)
+{
+}
+
+void ADebugPlayer::SelectTile(UTile* Tile)
+{
+}
+
+void ADebugPlayer::DeselectTile()
+{
+}
+
+bool ADebugPlayer::CanSpendCash(int Cost)
+{
+	return false;
+}
+
