@@ -1,10 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
+#include "Pollution.h"
 #include "CustomGameInstance.h"
 #include "BaseBuilding.h"
 #include "Tile.h"
-#include "Pollution.h"
 
 // Sets default values for this component's properties
 UPollution::UPollution()

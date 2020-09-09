@@ -8,6 +8,12 @@
 
 class AMapCreator;
 class UTile;
+class UDebugUI;
+class UInfoScreen;
+class USpringArmComponent;
+class UCineCameraComponent;
+class UCustomGameInstance;
+
 UCLASS()
 class ADebugPlayer : public APawn
 {
@@ -22,12 +28,16 @@ public:
 	float cameraZoomMax;
 	float cameraZoomStep;
 
-	//ui debugUI;
-	//ui infoHud;
+	UDebugUI* debugUI;
+	UInfoScreen* infoHud;
 	AMapCreator* map;
-	//Gameinstance gameInstance;
+	UCustomGameInstance* gameInstance;
 	bool isDebug;
 	UTile* currentSelectedTile;
+
+	USpringArmComponent* springArm;
+	UCineCameraComponent* cineCam;
+	
 
 public:
 	// Sets default values for this pawn's properties
@@ -43,9 +53,12 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	void MoveHorizontal(float AxisValue);
+	void MoveVertical(float AxisValue);
 	void AddCash(int Cash);
 	void SelectTile(UTile* Tile);
 	void DeselectTile();
 	bool CanSpendCash(int Cost);
+	void AddMovement(FVector Input);
+	void ZoomCamera(float MouseWheelAxisValue);
 };
