@@ -16,28 +16,35 @@ class UCash : public UActorComponent
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int incomeClean;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float upgradeDuration;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int upgradeCost;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int incomeDirty;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int incomeAbbandoned;
 	UPROPERTY(BlueprintAssignable)
 		FSampleDelegate OnUpgradeFinished;
 private:
 	bool upgradeActive;
+	UPROPERTY()
 	FTimerHandle upgradeTimer;
 
 
 public:	
 	// Sets default values for this component's properties
 	UCash();
-
-	const int GetIncome(const EBuildingState State);
+	UFUNCTION(BlueprintPure)
+		const int GetIncome(const EBuildingState State);
 	void UpgradeBuilding();
 
 	const bool IsUpgrading() {
 		return upgradeActive;
 	}
+	UFUNCTION(BlueprintPure)
 	const int GetUpgradeCost() {
 		return upgradeCost;
 	}

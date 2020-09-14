@@ -8,7 +8,7 @@
 #include "CustomGameInstance.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class UCustomGameInstance : public UGameInstance
@@ -17,7 +17,7 @@ class UCustomGameInstance : public UGameInstance
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		AMapCreator* map;
-		UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FVector camMinPos;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FVector camMaxPos;

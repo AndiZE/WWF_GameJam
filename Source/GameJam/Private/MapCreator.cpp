@@ -4,6 +4,8 @@
 #include "MapCreator.h"
 #include "Tile.h"
 #include "BaseBuilding.h"
+#include "Cash.h"
+#include "DebugPlayer.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values

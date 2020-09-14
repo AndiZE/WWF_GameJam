@@ -5,12 +5,13 @@
 #include "CoreMinimal.h"
 #include "Engine/StaticMeshActor.h"
 #include "BuildingState.h"
-#include "DebugPlayer.h"
-#include "Cash.h"
-#include "Pollution.h"
-#include "CustomGameInstance.h"
-#include "Particles/ParticleSystemComponent.h"
 #include "BaseBuilding.generated.h"
+
+class ADebugPlayer;
+class UStaticMeshComponent;
+class UParticleSystemComponent;
+class UPollution;
+class UCash;
 
 
 /**
@@ -41,23 +42,26 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float decayTime;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		FTimerHandle decayTimer;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		EBuildingState state;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FString buildingName;
+
+
+private:
+	UPROPERTY()
+		FTimerHandle decayTimer;
+	UPROPERTY()
 		ADebugPlayer* player;
 
-
-
 public:
-	UFUNCTION (BlueprintCallable)
+	UFUNCTION ()
 		void DowngradeBuilding();
 	UFUNCTION (BlueprintCallable)
 		void UpgradeBuilding();
 	UFUNCTION(BlueprintCallable)
 		void UpdateUI();
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION()
 		void DecayBuilding();
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION()
 		void ActivateToGrid();
 };

@@ -2,6 +2,11 @@
 
 
 #include "BaseBuilding.h"
+#include "DebugPlayer.h"
+#include "Cash.h"
+#include "Pollution.h"
+#include "CustomGameInstance.h"
+#include "Particles/ParticleSystemComponent.h"
 
 void ABaseBuilding::DowngradeBuilding()
 {
@@ -111,4 +116,7 @@ ABaseBuilding::ABaseBuilding()
 	dust->SetupAttachment(RootComponent);
 	pollutionComp = CreateDefaultSubobject<UPollution>(TEXT("Pollution"));
 	cashComp = CreateDefaultSubobject<UCash>(TEXT("Cash"));
+	tileSizeX = 1;
+	tileSizeY = 1;
+	tileSize = 200.0f;
 }

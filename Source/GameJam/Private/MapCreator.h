@@ -27,6 +27,7 @@ public:
 	float gridSize;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite);
 	float taxInterval;
+	bool isDebug;
 	FTimerHandle taxTimer;
 	int winPollutionThreshold;
 	int losePollutionThreshold;

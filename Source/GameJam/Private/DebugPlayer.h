@@ -27,17 +27,23 @@ public:
 	float cameraZoomMin;
 	float cameraZoomMax;
 	float cameraZoomStep;
-
-	UDebugUI* debugUI;
-	UInfoScreen* infoHud;
-	AMapCreator* map;
-	UCustomGameInstance* gameInstance;
 	bool isDebug;
-	UTile* currentSelectedTile;
+	UPROPERTY()
+		UDebugUI* debugUI;
+	UPROPERTY()
+		UInfoScreen* infoHud;
+	UPROPERTY()
+		AMapCreator* map;
+	UPROPERTY()
+		UCustomGameInstance* gameInstance;
+	UPROPERTY()
+		UTile* currentSelectedTile;
 
-	USpringArmComponent* springArm;
-	UCineCameraComponent* cineCam;
-	
+	UPROPERTY()
+		USpringArmComponent* springArm;
+	UPROPERTY()
+		UCineCameraComponent* cineCam;
+
 
 public:
 	// Sets default values for this pawn's properties
@@ -47,7 +53,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

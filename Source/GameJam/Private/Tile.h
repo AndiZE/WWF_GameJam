@@ -12,7 +12,7 @@
 /**
  *
  */
-UCLASS()
+UCLASS(Blueprintable, BlueprintType)
 class UTile : public UObject
 {
 	GENERATED_BODY()
@@ -45,7 +45,7 @@ public:
 		int GetPollution() { return curPollution; };
 	UFUNCTION(BlueprintPure)
 		float GetIncome() { return income; };
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintPure)
 		ABaseBuilding* GetBuilding() { return building; };
 	UFUNCTION(BlueprintCallable)
 		 void SetBuilding(ABaseBuilding* NewBuilding);

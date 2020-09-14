@@ -11,17 +11,18 @@ class UTile;
 /**
  *
  */
-UCLASS()
+UCLASS(Blueprintable)
 class UInfoScreen : public UUserWidget
 {
 	GENERATED_BODY()
 public:
-	void UpdateInfo(UTile* Tile);
-	UFUNCTION(BlueprintCallable)
-		void UpdateCash(int Cash);
-	UFUNCTION(BlueprintCallable)
-		void UpdatePollution(int Pollution);
-	UFUNCTION(BlueprintCallable)
-		void UpdateProgressbar(float MaxTime, float ElapsedTime);
+	UFUNCTION(BlueprintImplementableEvent)
+	void UpdateInfo(const UTile* Tile);
+	UFUNCTION(BlueprintImplementableEvent)
+		void UpdateCash(const int Cash);
+	UFUNCTION(BlueprintImplementableEvent)
+		void UpdatePollution(const int Pollution);
+	UFUNCTION(BlueprintImplementableEvent)
+		void UpdateProgressbar(const float MaxTime, const float ElapsedTime);
 
 };
