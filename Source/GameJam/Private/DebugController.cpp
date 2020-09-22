@@ -7,7 +7,6 @@
 ADebugController::ADebugController() {
 	bEnableClickEvents = true;
 	bEnableTouchEvents = false;
-	ClickEventKeys.Add(FKey("LeftMouseButton"));
+	ClickEventKeys.Add(EKeys::LeftMouseButton);
 	bShowMouseCursor = true;
-	//UWidgetBlueprintLibrary::SetInputMode_GameAndUI(this);
 }

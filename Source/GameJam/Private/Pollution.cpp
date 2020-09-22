@@ -4,6 +4,7 @@
 #include "CustomGameInstance.h"
 #include "BaseBuilding.h"
 #include "Tile.h"
+#include "TileExtension.h"
 
 // Sets default values for this component's properties
 UPollution::UPollution()
@@ -17,6 +18,8 @@ UPollution::UPollution()
 
 void UPollution::SwitchPollution(EBuildingState State)
 {
+	TArray<UTile*> affectedTiles;
+
 	ABaseBuilding* building = Cast<ABaseBuilding>(GetOwner());
 	if (building == nullptr) {
 		return;
@@ -25,7 +28,48 @@ void UPollution::SwitchPollution(EBuildingState State)
 	if (gameInstance == nullptr) {
 		return;
 	}
-	//TArray<UTile*> tiles = gameInstance->map->FindTilesWithBuilding(building);
+	TArray<UTile*> tiles = gameInstance->map->FindTilesWithBuildings(building);
+	for (UTile* t_p : tiles)
+	{
+		TArray<UTile*> rangeTiles = UTileExtension::GetTilesInRange(t_p, rangeCurrent);
+		for (UTile* rt_p : rangeTiles)
+		{
+			affectedTiles.AddUnique(rt_p);
+		}
+	}
+	strenghtCurrent *= -1;
+	for (UTile* at_p : affectedTiles) {
+		at_p->UpdatePollution(strenghtCurrent);
+	}
+	switch (State)
+	{
+	case EBuildingState::Green:
+		strenghtCurrent = strenghtClean;
+		rangeCurrent = rangeClean;
+		break;
+	case EBuildingState::Dirty:
+		strenghtCurrent = strenghtDirty;
+		rangeCurrent = rangeDirty;
+		break;
+	case EBuildingState::Abbandoned:
+		strenghtCurrent = strenghtAbbadoned;
+		rangeCurrent = rangeAbbadoned;
+		break;
+	}
+	affectedTiles.Empty();
+	tiles.Empty();
+	tiles = gameInstance->map->FindTilesWithBuildings(building);
+	for (UTile* t_p : tiles)
+	{
+		TArray<UTile*> rangeTiles = UTileExtension::GetTilesInRange(t_p, rangeCurrent);
+		for (UTile* rt_p : rangeTiles)
+		{
+			affectedTiles.AddUnique(rt_p);
+		}
+	}
+	for (UTile* at_p : affectedTiles) {
+		at_p->UpdatePollution(strenghtCurrent);
+	}
 }
 
 

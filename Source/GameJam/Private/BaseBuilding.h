@@ -5,17 +5,18 @@
 #include "CoreMinimal.h"
 #include "Engine/StaticMeshActor.h"
 #include "BuildingState.h"
+#include "Pollution.h"
+#include "Cash.h"
 #include "BaseBuilding.generated.h"
 
 class ADebugPlayer;
 class UStaticMeshComponent;
 class UParticleSystemComponent;
-class UPollution;
-class UCash;
+class UCustomGameInstance;
 
 
 /**
- * 
+ *
  */
 UCLASS()
 class ABaseBuilding : public AStaticMeshActor
@@ -52,11 +53,13 @@ private:
 		FTimerHandle decayTimer;
 	UPROPERTY()
 		ADebugPlayer* player;
-
+	UPROPERTY()
+		UCustomGameInstance* gameInstance;
 public:
-	UFUNCTION ()
+	virtual void BeginPlay() override;
+	UFUNCTION()
 		void DowngradeBuilding();
-	UFUNCTION (BlueprintCallable)
+	UFUNCTION(BlueprintCallable)
 		void UpgradeBuilding();
 	UFUNCTION(BlueprintCallable)
 		void UpdateUI();
@@ -64,4 +67,6 @@ public:
 		void DecayBuilding();
 	UFUNCTION()
 		void ActivateToGrid();
+	UFUNCTION()
+		void OnMeshClicked(UPrimitiveComponent* Target, FKey ButtonPressed);
 };

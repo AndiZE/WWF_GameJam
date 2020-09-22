@@ -39,6 +39,17 @@ ADebugPlayer::ADebugPlayer()
 	cameraZoomMin = 700.0f;
 	cameraZoomMax = 3000.0f;
 	cameraZoomStep = 100.0f;
+
+	//UI
+	if (isDebug) {
+		//ConstructorHelpers::FClassFinder<UUserWidget> MenuClassFinder(TEXT("Game/CPP-BP/Widget/WC_InfoScreen"));
+		//debugUI = Cast<UInfoScreen>(MenuClassFinder.Class);
+	}
+	else {
+		ConstructorHelpers::FClassFinder<UUserWidget> MenuClassFinder(TEXT("/Game/CPP-BP/Widget/WC_InfoScreen"));
+		infoScreenClass = MenuClassFinder.Class;
+
+	}
 }
 
 // Called when the game starts or when spawned
@@ -47,23 +58,23 @@ void ADebugPlayer::BeginPlay()
 	Super::BeginPlay();
 	AActor* actor = UGameplayStatics::GetActorOfClass(GetWorld(), AMapCreator::StaticClass());
 	AMapCreator* castMap = Cast<AMapCreator>(actor);
+	player = GetWorld()->GetFirstPlayerController();
 	if (castMap != nullptr)
 	{
 		map = castMap;
 	}
 	if (isDebug) {
-		UUserWidget* ui = CreateWidget(UGameplayStatics::GetPlayerController(GetWorld(), 0), UDebugUI::StaticClass());
+		UUserWidget* ui = CreateWidget(player, UDebugUI::StaticClass());
 		debugUI = Cast<UDebugUI>(ui);
 		debugUI->AddToViewport();
 	}
 	else {
-		UUserWidget* ui = CreateWidget(UGameplayStatics::GetPlayerController(GetWorld(), 0), UInfoScreen::StaticClass());
+		UUserWidget* ui = CreateWidget(player, infoScreenClass);
 		infoHud = Cast<UInfoScreen>(ui);
 		infoHud->AddToViewport();
 		AddCash(startMoney);
 		infoHud->UpdateInfo(nullptr);
 	}
-	player = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 
 }
 
@@ -122,14 +133,15 @@ void ADebugPlayer::AddCash(int Cash)
 
 void ADebugPlayer::SelectTile(UTile* Tile)
 {
-	if (currentSelectedTile)
+	if (currentSelectedTile && currentSelectedTile->GetBuilding())
 	{
 		currentSelectedTile->GetBuilding()->GetStaticMeshComponent()->SetScalarParameterValueOnMaterials("Selection", 0.0f);
 	}
-	if (Tile)
+	currentSelectedTile = Tile;
+	infoHud->UpdateInfo(currentSelectedTile);
+	if (currentSelectedTile && currentSelectedTile->GetBuilding())
 	{
-		currentSelectedTile = Tile;
-		infoHud->UpdateInfo(currentSelectedTile);
+		currentSelectedTile->GetBuilding()->GetStaticMeshComponent()->SetScalarParameterValueOnMaterials("Selection", 1.0f);
 	}
 }
 
@@ -141,12 +153,6 @@ void ADebugPlayer::DeselectTile()
 	}
 	currentSelectedTile = nullptr;
 	infoHud->UpdateInfo(currentSelectedTile);
-
-	if (currentSelectedTile != nullptr)
-	{
-		currentSelectedTile->GetBuilding()->GetStaticMeshComponent()->SetScalarParameterValueOnMaterials("Selection", 1.0f);
-	}
-
 }
 
 bool ADebugPlayer::CanSpendCash(int Cost)

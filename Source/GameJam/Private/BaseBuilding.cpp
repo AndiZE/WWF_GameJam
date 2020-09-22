@@ -3,10 +3,22 @@
 
 #include "BaseBuilding.h"
 #include "DebugPlayer.h"
-#include "Cash.h"
-#include "Pollution.h"
+#include "Tile.h"
 #include "CustomGameInstance.h"
 #include "Particles/ParticleSystemComponent.h"
+
+
+void ABaseBuilding::BeginPlay() {
+	Super::BeginPlay();
+	player = Cast<ADebugPlayer>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	GetStaticMeshComponent()->OnClicked.AddDynamic(this, &ABaseBuilding::OnMeshClicked);
+	gameInstance = Cast<UCustomGameInstance>(GetGameInstance());
+}
+
+void ABaseBuilding::OnMeshClicked(UPrimitiveComponent* Target, FKey ButtonPressed) {
+	GetStaticMeshComponent()->SetScalarParameterValueOnMaterials("Selection", 0.0f);
+	UpdateUI();
+}
 
 void ABaseBuilding::DowngradeBuilding()
 {
@@ -67,8 +79,7 @@ void ABaseBuilding::UpgradeBuilding()
 
 void ABaseBuilding::UpdateUI()
 {
-	UCustomGameInstance* gameInstance = Cast<UCustomGameInstance>(GetGameInstance());
-	if (gameInstance != nullptr) {
+	if (gameInstance) {
 		UTile* tile = gameInstance->map->GetTileFormWorldPosition(GetActorLocation());
 		player->SelectTile(tile);
 	}
@@ -81,28 +92,31 @@ void ABaseBuilding::DecayBuilding()
 
 void ABaseBuilding::ActivateToGrid()
 {
-	FHitResult* hit = nullptr;
-	FVector offset = FVector(0.0f, 0.0f, 0.0f);
-	UCustomGameInstance* gameInstance = Cast<UCustomGameInstance>(GetGameInstance());
+	FVector offset = FVector(0.0f);
+	if (gameInstance == nullptr)
+	{
+		gameInstance = Cast<UCustomGameInstance>(GetGameInstance());
+	}
 	if (tileSizeX == 1) {
 		offset += FVector(tileSize * 0.5f, 0.0f, 0.0f);
 	}
 	if (tileSizeY == 1) {
 		offset += FVector(0.0f, tileSize * 0.5f, 0.0f);
 	}
-
-	for (size_t y = 0; y < tileSizeY - 1; y++)
+	for (size_t y = 0; y < tileSizeY; y++)
 	{
-		for (size_t x = 0; x < tileSizeX - 1; x++)
+		for (size_t x = 0; x < tileSizeX; x++)
 		{
 			offset += FVector(x * tileSize - tileSize * 0.5f, y * tileSize - tileSize * 0.5f, 0.0f) + GetActorLocation();
-			GetWorld()->LineTraceSingleByChannel(*hit, offset, GetActorUpVector() * 400.0f + offset, ECollisionChannel::ECC_Visibility);
+			FHitResult hit(ForceInit);
+			GetWorld()->LineTraceSingleByChannel(hit, offset, GetActorUpVector() * 400.0f + offset, ECollisionChannel::ECC_Visibility);
 
-			if (hit != nullptr) {
-				//gameInstance->map->GetTileFromWorldPosition()->SetBuilding(this);
+			if (&hit != nullptr) {
+				gameInstance->map->GetTileFormWorldPosition(hit.Location)->SetBuilding(this);
 				GetWorldTimerManager().SetTimer(decayTimer, this, &ABaseBuilding::DowngradeBuilding, decayTime, false);
 				gruen->SetVisibility(false);
 			}
+
 		}
 	}
 }

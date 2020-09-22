@@ -21,7 +21,8 @@ class ADebugPlayer : public APawn
 	GENERATED_BODY()
 
 public:
-	int playerCash;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int playerCash;
 	int startMoney;
 	//Camera
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -50,8 +51,10 @@ public:
 	UPROPERTY()
 		UCineCameraComponent* cineCam;
 private:
+
 	APlayerController* player;
 	USceneComponent* rootSceneComponent;
+	TSubclassOf<class UInfoScreen> infoScreenClass;
 
 public:
 	// Sets default values for this pawn's properties

@@ -15,9 +15,10 @@ UCLASS(Blueprintable)
 class UInfoScreen : public UUserWidget
 {
 	GENERATED_BODY()
+
 public:
 	UFUNCTION(BlueprintImplementableEvent)
-	void UpdateInfo(const UTile* Tile);
+		void UpdateInfo(const UTile* Tile);
 	UFUNCTION(BlueprintImplementableEvent)
 		void UpdateCash(const int Cash);
 	UFUNCTION(BlueprintImplementableEvent)

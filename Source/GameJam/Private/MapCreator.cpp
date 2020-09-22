@@ -9,18 +9,21 @@
 #include "Kismet/GameplayStatics.h"
 #include "CustomGameInstance.h"
 #include "Sound/SoundCue.h"
+#include "InfoScreen.h"
 #include "Blueprint/UserWidget.h"
 #include "Tutorial.h"
+#include "Win.h"
+#include "LosePollution.h"
 
 // Sets default values
 AMapCreator::AMapCreator()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	auto file = ConstructorHelpers::FObjectFinder<USoundBase>(TEXT("SoundCue'/Game/Audio/Creepy_Ambience_LOOP'"));
-	if (file.Object != nullptr)
+	auto soundFile = ConstructorHelpers::FObjectFinder<USoundBase>(TEXT("SoundCue'/Game/Audio/Creepy_Ambience_LOOP'"));
+	if (soundFile.Object != nullptr)
 	{
-		ambient = file.Object;
+		ambient = soundFile.Object;
 	}
 }
 
@@ -37,16 +40,36 @@ void AMapCreator::BeginPlay()
 	gameInstance->camMinPos = GetActorLocation();
 	gameInstance->camMaxPos = GetActorLocation() + FVector(sizeX * gridSize, sizeY * gridSize, 0.0f);
 	GetWorldTimerManager().SetTimer(taxTimer, this, &AMapCreator::CollectTax, taxInterval, true);
-	UGameplayStatics::PlaySound2D(this,ambient);
+	UGameplayStatics::PlaySound2D(this, ambient);
 	RegisterBuilding();
 	UUserWidget* tutorial = CreateWidget(UGameplayStatics::GetPlayerController(GetWorld(), 0), UTutorial::StaticClass());
 	tutorial->AddToViewport();
+	player = Cast<ADebugPlayer>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	roadInstance = GetWorld()->GetParameterCollectionInstance(roadParams);
 }
 
 // Called every frame
 void AMapCreator::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	player->infoHud->UpdateProgressbar(taxInterval, GetWorldTimerManager().GetTimerElapsed(taxTimer));
+	int tPollution = GetTotalPollution();
+	player->infoHud->UpdatePollution(tPollution);
+		roadInstance->SetScalarParameterValue("Dirtyness", 0.0f);
+		if (tPollution <= winPollutionThreshold) {
+			if (!endActivted) {
+				endActivted = true;
+				UUserWidget* tutorial = CreateWidget(UGameplayStatics::GetPlayerController(GetWorld(), 0), UWin::StaticClass());
+				tutorial->AddToViewport();
+			}
+		}
+		else if (tPollution >= losePollutionThreshold){
+			if (!endActivted) {
+				endActivted = true;
+				UUserWidget* tutorial = CreateWidget(UGameplayStatics::GetPlayerController(GetWorld(), 0), ULosePollution::StaticClass());
+				tutorial->AddToViewport();
+			}
+		}
 }
 
 void AMapCreator::CreateGrid()
@@ -57,7 +80,7 @@ void AMapCreator::CreateGrid()
 	{
 		for (size_t x = 0; x < sizeX; x++)
 		{
-			UTile* tile = NewObject<UTile>(this,UTile::StaticClass());
+			UTile* tile = NewObject<UTile>(this, UTile::StaticClass());
 			tile->neighbours.SetNumUninitialized(4);
 			for (UTile* tileP : tile->neighbours)
 			{
@@ -133,10 +156,10 @@ void AMapCreator::CollectTax()
 
 		}
 	}
-	ADebugPlayer* player = Cast<ADebugPlayer>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 	if (player != nullptr) {
 		player->AddCash(taxCollected);
 	}
+
 }
 
 void AMapCreator::RegisterBuilding()
