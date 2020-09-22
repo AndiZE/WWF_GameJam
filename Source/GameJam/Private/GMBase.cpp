@@ -2,4 +2,11 @@
 
 
 #include "GMBase.h"
+#include "DebugPlayer.h"
+#include "DebugController.h"
 
+AGMBase::AGMBase()
+{
+	PlayerControllerClass = ADebugController::StaticClass();
+	DefaultPawnClass = ADebugPlayer::StaticClass();
+}

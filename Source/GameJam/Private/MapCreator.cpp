@@ -7,47 +7,71 @@
 #include "Cash.h"
 #include "DebugPlayer.h"
 #include "Kismet/GameplayStatics.h"
+#include "CustomGameInstance.h"
+#include "Sound/SoundCue.h"
+#include "Blueprint/UserWidget.h"
+#include "Tutorial.h"
 
 // Sets default values
 AMapCreator::AMapCreator()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
+	auto file = ConstructorHelpers::FObjectFinder<USoundBase>(TEXT("SoundCue'/Game/Audio/Creepy_Ambience_LOOP'"));
+	if (file.Object != nullptr)
+	{
+		ambient = file.Object;
+	}
 }
 
 // Called when the game starts or when spawned
 void AMapCreator::BeginPlay()
 {
 	Super::BeginPlay();
-
+	UCustomGameInstance* gameInstance = Cast<UCustomGameInstance>(GetGameInstance());
+	if (gameInstance == nullptr) {
+		return;
+	}
+	gameInstance->map = this;
+	CreateGrid();
+	gameInstance->camMinPos = GetActorLocation();
+	gameInstance->camMaxPos = GetActorLocation() + FVector(sizeX * gridSize, sizeY * gridSize, 0.0f);
+	GetWorldTimerManager().SetTimer(taxTimer, this, &AMapCreator::CollectTax, taxInterval, true);
+	UGameplayStatics::PlaySound2D(this,ambient);
+	RegisterBuilding();
+	UUserWidget* tutorial = CreateWidget(UGameplayStatics::GetPlayerController(GetWorld(), 0), UTutorial::StaticClass());
+	tutorial->AddToViewport();
 }
 
 // Called every frame
 void AMapCreator::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void AMapCreator::CreateGrid()
 {
 	startPosition = FVector(0.0f);
 	ClearGrid();
-	for (size_t y = 0; y < sizeY-1; y++)
+	for (size_t y = 0; y < sizeY; y++)
 	{
-		for (size_t x = 0; x < sizeX - 1; x++)
+		for (size_t x = 0; x < sizeX; x++)
 		{
-			UTile* tile = NewObject<UTile>(UTile::StaticClass());
+			UTile* tile = NewObject<UTile>(this,UTile::StaticClass());
+			tile->neighbours.SetNumUninitialized(4);
+			for (UTile* tileP : tile->neighbours)
+			{
+				tileP = nullptr;
+			}
 			tile->posX = x;
 			tile->posY = y;
-			tile->worldPosition = startPosition + FVector(gridSize*x + gridSize * 0.5f, gridSize * y + gridSize * 0.5f, 0.0f);
+			tile->worldPosition = startPosition + FVector(gridSize * x + gridSize * 0.5f, gridSize * y + gridSize * 0.5f, 0.0f);
 
 			if (x > 0) {
-				tile->SetNeigbours(GetTileFromGrid(x-1, y), ETileDirection::South);
+				tile->SetNeigbours(GetTileFromGrid(x - 1, y), ETileDirection::South);
 			}
 			if (y > 0) {
-				tile->SetNeigbours(GetTileFromGrid(x, y-1), ETileDirection::West);
+				tile->SetNeigbours(GetTileFromGrid(x, y - 1), ETileDirection::West);
 			}
 			gridMap.Add(tile);
 		}

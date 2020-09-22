@@ -3,16 +3,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/GameModeBase.h"
-#include "GMBase.generated.h"
+#include "Blueprint/UserWidget.h"
+#include "Win.generated.h"
 
 /**
- *
+ * 
  */
 UCLASS()
-class AGMBase : public AGameModeBase
+class UWin : public UUserWidget
 {
 	GENERATED_BODY()
-public:
-	AGMBase();
+	
 };

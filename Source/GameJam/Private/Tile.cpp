@@ -3,10 +3,6 @@
 
 #include "Tile.h"
 
-UTile::UTile(const FObjectInitializer& obj)
-{
-}
-
 void UTile::SetNeigbours(UTile* Tile, ETileDirection direction)
 {
 	neighbours[(int)direction] = Tile;

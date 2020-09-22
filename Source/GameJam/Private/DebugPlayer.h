@@ -13,6 +13,7 @@ class UInfoScreen;
 class USpringArmComponent;
 class UCineCameraComponent;
 class UCustomGameInstance;
+class APlayerController;
 
 UCLASS()
 class ADebugPlayer : public APawn
@@ -23,15 +24,20 @@ public:
 	int playerCash;
 	int startMoney;
 	//Camera
-	float cameraSpeed;
-	float cameraZoomMin;
-	float cameraZoomMax;
-	float cameraZoomStep;
-	bool isDebug;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float cameraSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float cameraZoomMin;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float cameraZoomMax;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float cameraZoomStep;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool isDebug = false;
 	UPROPERTY()
-		UDebugUI* debugUI;
+		UDebugUI* debugUI = nullptr;
 	UPROPERTY()
-		UInfoScreen* infoHud;
+		UInfoScreen* infoHud = nullptr;
 	UPROPERTY()
 		AMapCreator* map;
 	UPROPERTY()
@@ -43,7 +49,9 @@ public:
 		USpringArmComponent* springArm;
 	UPROPERTY()
 		UCineCameraComponent* cineCam;
-
+private:
+	APlayerController* player;
+	USceneComponent* rootSceneComponent;
 
 public:
 	// Sets default values for this pawn's properties
@@ -66,5 +74,6 @@ public:
 	void DeselectTile();
 	bool CanSpendCash(int Cost);
 	void AddMovement(FVector Input);
-	void ZoomCamera(float MouseWheelAxisValue);
+	void ZoomInCamera();
+	void ZoomOutCamera();
 };

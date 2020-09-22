@@ -8,6 +8,8 @@
 
 class UTile;
 class ABaseBuilding;
+class UAudioComponent;
+class USoundBase;
 
 UCLASS()
 class AMapCreator : public AActor
@@ -20,7 +22,7 @@ private:
 	int sizeY;
 	UPROPERTY(EditAnywhere)
 	FVector startPosition;
-
+	USoundBase* ambient;
 public:
 	TArray<UTile*> gridMap;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite);
@@ -44,7 +46,6 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
 
 	void CreateGrid();
 	void ClearGrid();

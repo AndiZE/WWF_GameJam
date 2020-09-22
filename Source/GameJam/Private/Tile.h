@@ -36,9 +36,6 @@ public:
 		float income;
 
 public:
-	UTile(const class FObjectInitializer& obj);
-
-	void Init(const int X, const int Y, const FVector WorldPosition);
 	UFUNCTION(BlueprintCallable)
 		void SetNeigbours(UTile* Tile, ETileDirection direction);
 	UFUNCTION(BlueprintPure)

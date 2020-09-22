@@ -19,10 +19,26 @@ ADebugPlayer::ADebugPlayer()
 {
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	rootSceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
+	RootComponent = rootSceneComponent;
+
+	//Spring Arm
 	springArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	springArm->SetupAttachment(RootComponent);
+
+	springArm->SetRelativeRotation(FQuat(FRotator(-35.0f, 0.0f, 0.0f)));
+	springArm->TargetArmLength = 2000.0f;
+	springArm->bDoCollisionTest = false;
+
+	//Camera
 	cineCam = CreateDefaultSubobject<UCineCameraComponent>(TEXT("CineCamera"));
 	cineCam->SetupAttachment(springArm);
+
+	cameraSpeed = 1000.0f;
+	cameraZoomMin = 700.0f;
+	cameraZoomMax = 3000.0f;
+	cameraZoomStep = 100.0f;
 }
 
 // Called when the game starts or when spawned
@@ -47,26 +63,24 @@ void ADebugPlayer::BeginPlay()
 		AddCash(startMoney);
 		infoHud->UpdateInfo(nullptr);
 	}
+	player = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+
 }
 
 // Called every frame
 void ADebugPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (isDebug)
+	if (isDebug && player)
 	{
-		APlayerController* player = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-		if (player != nullptr)
+		FHitResult* hit = nullptr;
+		player->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Visibility), true, *hit);
+		int x = 0;
+		int y = 0;
+		if (hit != nullptr)
 		{
-			FHitResult* hit = nullptr;
-			player->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Visibility), true, *hit);
-			int x = 0;
-			int y = 0;
-			if (hit != nullptr)
-			{
-				map->GetTilePositionFromWorldPosition(hit->Location, x, y);
-				debugUI->UpdateGridText(x, y, map->GetTileFromGrid(x, y));
-			}
+			map->GetTilePositionFromWorldPosition(hit->Location, x, y);
+			debugUI->UpdateGridText(x, y, map->GetTileFromGrid(x, y));
 		}
 	}
 
@@ -79,7 +93,8 @@ void ADebugPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAxis("Horizontal", this, &ADebugPlayer::MoveHorizontal);
 	PlayerInputComponent->BindAxis("Vertical", this, &ADebugPlayer::MoveVertical);
 	PlayerInputComponent->BindAction("Deselect", EInputEvent::IE_Pressed, this, &ADebugPlayer::DeselectTile);
-	PlayerInputComponent->BindAxis("Zoom", this, &ADebugPlayer::ZoomCamera);
+	PlayerInputComponent->BindKey(EKeys::MouseScrollUp, EInputEvent::IE_Pressed, this, &ADebugPlayer::ZoomInCamera);
+	PlayerInputComponent->BindKey(EKeys::MouseScrollDown, EInputEvent::IE_Pressed, this, &ADebugPlayer::ZoomOutCamera);
 }
 
 void ADebugPlayer::MoveHorizontal(float AxisValue)
@@ -107,12 +122,15 @@ void ADebugPlayer::AddCash(int Cash)
 
 void ADebugPlayer::SelectTile(UTile* Tile)
 {
-	if (currentSelectedTile != nullptr)
+	if (currentSelectedTile)
 	{
 		currentSelectedTile->GetBuilding()->GetStaticMeshComponent()->SetScalarParameterValueOnMaterials("Selection", 0.0f);
 	}
-	currentSelectedTile = Tile;
-	infoHud->UpdateInfo(currentSelectedTile);
+	if (Tile)
+	{
+		currentSelectedTile = Tile;
+		infoHud->UpdateInfo(currentSelectedTile);
+	}
 }
 
 void ADebugPlayer::DeselectTile()
@@ -161,7 +179,13 @@ void ADebugPlayer::AddMovement(FVector Input)
 		pos.Z));
 }
 
-void ADebugPlayer::ZoomCamera(float MouseWheelAxisValue)
+void ADebugPlayer::ZoomInCamera()
+{
+	springArm->TargetArmLength = FMath::Clamp(springArm->TargetArmLength - cameraZoomStep, cameraZoomMin, cameraZoomMax);
+}
+
+void ADebugPlayer::ZoomOutCamera()
 {
 	springArm->TargetArmLength = FMath::Clamp(springArm->TargetArmLength + cameraZoomStep, cameraZoomMin, cameraZoomMax);
 }
+

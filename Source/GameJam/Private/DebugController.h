@@ -13,5 +13,6 @@ UCLASS()
 class ADebugController : public APlayerController
 {
 	GENERATED_BODY()
-	
+public:
+		ADebugController();
 };
