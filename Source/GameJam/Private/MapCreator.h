@@ -34,7 +34,7 @@ private:
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite);
 	UMaterialParameterCollectionInstance* roadInstance;
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<UTile*> gridMap;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite);
 	float gridSize;

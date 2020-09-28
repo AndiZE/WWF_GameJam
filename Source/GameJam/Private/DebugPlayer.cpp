@@ -48,7 +48,6 @@ ADebugPlayer::ADebugPlayer()
 	else {
 		ConstructorHelpers::FClassFinder<UUserWidget> MenuClassFinder(TEXT("/Game/CPP-BP/Widget/WC_InfoScreen"));
 		infoScreenClass = MenuClassFinder.Class;
-
 	}
 }
 

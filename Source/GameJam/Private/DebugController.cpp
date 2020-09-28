@@ -2,7 +2,6 @@
 
 
 #include "DebugController.h"
-#include <Runtime\UMG\Public\Blueprint\WidgetBlueprintLibrary.h>
 
 ADebugController::ADebugController() {
 	bEnableClickEvents = true;

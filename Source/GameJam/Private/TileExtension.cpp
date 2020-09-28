@@ -11,11 +11,17 @@ TArray<UTile*> UTileExtension::GetTilesInRange(UTile* StartTile, const int Range
 	openList.Add(StartTile);
 	while (counter > 0) {
 		counter--;
-		for (UTile* t_p : openList)
+		for (UTile*& t_p : openList)
 		{
-			for (UTile* tn_p : t_p->neighbours)
+			//for (size_t i = 0; i < t_p->neighbours.Num(); i++)
+			//{
+			//	if (t_p->neighbours[i] != nullptr && t_p->neighbours[i]->IsValidLowLevel()) {
+			//		savedList.AddUnique(t_p->neighbours[i]);
+			//	}
+			//}
+			for (UTile*& tn_p : openList)
 			{
-				if (tn_p && tn_p->IsValidLowLevel()) {
+				if (tn_p->IsValidLowLevel()) {
 					savedList.AddUnique(tn_p);
 				}
 			}

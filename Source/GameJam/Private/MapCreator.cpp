@@ -99,6 +99,7 @@ void AMapCreator::CreateGrid()
 			gridMap.Add(tile);
 		}
 	}
+	startPosition = FVector(1.0f);
 }
 
 void AMapCreator::ClearGrid()

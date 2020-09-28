@@ -19,7 +19,7 @@ class UTile : public UObject
 
 private:
 	UPROPERTY(VisibleAnywhere)
-		ABaseBuilding* building;
+		ABaseBuilding* building = nullptr;
 	UPROPERTY(VisibleAnywhere)
 		int curPollution;
 
