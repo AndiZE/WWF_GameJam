@@ -4,6 +4,10 @@
 #include "Tile.h"
 #include "BaseBuilding.h"
 
+UTile::UTile() 
+{
+}
+
 void UTile::SetNeigbours(UTile* Tile, ETileDirection direction)
 {
 	neighbours[(int)direction] = Tile;

@@ -3,9 +3,9 @@
 
 #include "TileExtension.h"
 
-TArray<UTile*> UTileExtension::GetTilesInRange(UTile* StartTile, const int Range) {
+void UTileExtension::GetTilesInRange(UTile* StartTile, const int Range, TArray<UTile*> &outTiles) {
 	TArray<UTile*> openList;
-	TArray<UTile*> savedList;
+	//TArray<UTile*> savedList;
 	int counter = Range;
 
 	openList.Add(StartTile);
@@ -13,20 +13,16 @@ TArray<UTile*> UTileExtension::GetTilesInRange(UTile* StartTile, const int Range
 		counter--;
 		for (UTile*& t_p : openList)
 		{
-			//for (size_t i = 0; i < t_p->neighbours.Num(); i++)
-			//{
-			//	if (t_p->neighbours[i] != nullptr && t_p->neighbours[i]->IsValidLowLevel()) {
-			//		savedList.AddUnique(t_p->neighbours[i]);
-			//	}
-			//}
-			for (UTile*& tn_p : openList)
+			if (t_p->IsValidLowLevelFast())
 			{
-				if (tn_p->IsValidLowLevel()) {
-					savedList.AddUnique(tn_p);
+				for (UTile*& tn_p : t_p->neighbours)
+				{
+					if (tn_p->IsValidLowLevelFast()) {
+						outTiles.AddUnique(tn_p);
+					}
 				}
 			}
 		}
-		openList = savedList;
+		openList = outTiles;
 	}
-	return openList;
 }

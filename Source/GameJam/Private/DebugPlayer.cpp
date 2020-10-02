@@ -46,9 +46,20 @@ ADebugPlayer::ADebugPlayer()
 		//debugUI = Cast<UInfoScreen>(MenuClassFinder.Class);
 	}
 	else {
-		ConstructorHelpers::FClassFinder<UUserWidget> MenuClassFinder(TEXT("/Game/CPP-BP/Widget/WC_InfoScreen"));
-		infoScreenClass = MenuClassFinder.Class;
+		ConstructorHelpers::FClassFinder<UUserWidget> InfoClassFinder(TEXT("/Game/CPP-BP/Widget/WC_InfoScreen"));
+		infoScreenClass = InfoClassFinder.Class;
 	}
+
+	//Widget References
+	ConstructorHelpers::FClassFinder<UUserWidget> LoseCashFinder(TEXT("/Game/CPP-BP/Widget/WC_LoseCash"));
+	if (LoseCashFinder.Succeeded())
+		loseCashClass = LoseCashFinder.Class;
+	ConstructorHelpers::FClassFinder<UUserWidget> WinClassFinder(TEXT("/Game/CPP-BP/Widget/WC_Win"));
+	if (WinClassFinder.Succeeded())
+		winClass = WinClassFinder.Class;
+	ConstructorHelpers::FClassFinder<UUserWidget> LosePolFinder(TEXT("/Game/CPP-BP/Widget/WC_LosePollution"));
+	if (LosePolFinder.Succeeded())
+		losePolClass = LosePolFinder.Class;
 }
 
 // Called when the game starts or when spawned
@@ -124,7 +135,7 @@ void ADebugPlayer::AddCash(int Cash)
 	SelectTile(currentSelectedTile);
 	if (playerCash < 0)
 	{
-		UUserWidget* widget = CreateWidget(CreateWidget(UGameplayStatics::GetPlayerController(GetWorld(), 0), ULoseCash::StaticClass()));
+		UUserWidget* widget = CreateWidget(CreateWidget(UGameplayStatics::GetPlayerController(GetWorld(), 0), loseCashClass));
 		widget->AddToViewport();
 		UGameplayStatics::SetGamePaused(GetWorld(), true);
 	}

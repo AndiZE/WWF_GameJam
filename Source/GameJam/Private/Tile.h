@@ -36,6 +36,7 @@ public:
 		float income;
 
 public:
+	UTile();
 	UFUNCTION(BlueprintCallable)
 		void SetNeigbours(UTile* Tile, ETileDirection direction);
 	UFUNCTION(BlueprintPure)

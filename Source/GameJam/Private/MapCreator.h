@@ -68,8 +68,8 @@ public:
 	UTile* GetTileFromGrid(int XPos, int YPos);
 	void GetTilePositionFromWorldPosition(FVector WorldPosition, int& OutXPos, int& OutYPos);
 	UTile* GetTileFormWorldPosition(FVector WorldPosition);
-	int GetTotalPollution();
+	const int GetTotalPollution();
 	void CollectTax();
 	void RegisterBuilding();
-	TArray<UTile*>FindTilesWithBuildings(ABaseBuilding* Building);
+	void FindTilesWithBuildings(ABaseBuilding* Building, TArray<UTile*> &Tile);
 };

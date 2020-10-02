@@ -37,11 +37,11 @@ public:
 	void SwitchPollution(EBuildingState State);
 	void RemovePollution();
 	UFUNCTION(BlueprintPure)
-	int GetCurrentPollution() {
+	const int GetCurrentPollution() {
 		return strenghtCurrent;
 	}
 	UFUNCTION(BlueprintPure)
-	int GetCurrentRange() {
+	const int GetCurrentRange() {
 		return rangeCurrent;
 	}
 

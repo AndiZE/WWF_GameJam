@@ -14,5 +14,5 @@ class UTileExtension : public UObject
 {
 	GENERATED_BODY()
 public:
-	static TArray<UTile*> GetTilesInRange(UTile* StartTile, const int Range);
+	static void GetTilesInRange(UTile* StartTile, const int Range, TArray<UTile*>& outTiles);
 };

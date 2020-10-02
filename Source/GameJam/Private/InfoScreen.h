@@ -23,7 +23,8 @@ public:
 		void UpdateCash(const int Cash);
 	UFUNCTION(BlueprintImplementableEvent)
 		void UpdatePollution(const int Pollution);
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintNativeEvent)
 		void UpdateProgressbar(const float MaxTime, const float ElapsedTime);
+	virtual void UpdateProgressbar_Implementation(const float MaxTime, const float ElapsedTime);
 
 };

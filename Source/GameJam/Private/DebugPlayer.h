@@ -50,11 +50,22 @@ public:
 		USpringArmComponent* springArm;
 	UPROPERTY()
 		UCineCameraComponent* cineCam;
+
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<UUserWidget> winScreen;
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<UUserWidget> losePollutionScreen;
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<UUserWidget> loseCashScreen;
+
 private:
 
 	APlayerController* player;
 	USceneComponent* rootSceneComponent;
 	TSubclassOf<class UInfoScreen> infoScreenClass;
+	TSubclassOf<class ULoseCash> loseCashClass;
+	TSubclassOf<class ULosePollution> losePolClass;
+	TSubclassOf<class UWin> winClass;
 
 public:
 	// Sets default values for this pawn's properties

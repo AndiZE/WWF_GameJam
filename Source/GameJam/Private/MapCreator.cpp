@@ -14,6 +14,7 @@
 #include "Tutorial.h"
 #include "Win.h"
 #include "LosePollution.h"
+#include "UObject/UObjectGlobals.h"
 
 // Sets default values
 AMapCreator::AMapCreator()
@@ -55,21 +56,21 @@ void AMapCreator::Tick(float DeltaTime)
 	player->infoHud->UpdateProgressbar(taxInterval, GetWorldTimerManager().GetTimerElapsed(taxTimer));
 	int tPollution = GetTotalPollution();
 	player->infoHud->UpdatePollution(tPollution);
-		roadInstance->SetScalarParameterValue("Dirtyness", 0.0f);
-		if (tPollution <= winPollutionThreshold) {
-			if (!endActivted) {
-				endActivted = true;
-				UUserWidget* tutorial = CreateWidget(UGameplayStatics::GetPlayerController(GetWorld(), 0), UWin::StaticClass());
-				tutorial->AddToViewport();
-			}
+	roadInstance->SetScalarParameterValue("Dirtyness", 0.0f);
+	if (tPollution <= winPollutionThreshold) {
+		if (!endActivted) {
+			endActivted = true;
+			UUserWidget* tutorial = CreateWidget(UGameplayStatics::GetPlayerController(GetWorld(), 0), UWin::StaticClass());
+			tutorial->AddToViewport();
 		}
-		else if (tPollution >= losePollutionThreshold){
-			if (!endActivted) {
-				endActivted = true;
-				UUserWidget* tutorial = CreateWidget(UGameplayStatics::GetPlayerController(GetWorld(), 0), ULosePollution::StaticClass());
-				tutorial->AddToViewport();
-			}
+	}
+	else if (tPollution >= losePollutionThreshold) {
+		if (!endActivted) {
+			endActivted = true;
+			UUserWidget* tutorial = CreateWidget(UGameplayStatics::GetPlayerController(GetWorld(), 0), ULosePollution::StaticClass());
+			tutorial->AddToViewport();
 		}
+	}
 }
 
 void AMapCreator::CreateGrid()
@@ -80,9 +81,10 @@ void AMapCreator::CreateGrid()
 	{
 		for (size_t x = 0; x < sizeX; x++)
 		{
-			UTile* tile = NewObject<UTile>(this, UTile::StaticClass());
+			UTile* tile = NewObject<UTile>();
+			UE_LOG(LogTemp, Warning,TEXT("Test"));
 			tile->neighbours.SetNumUninitialized(4);
-			for (UTile* tileP : tile->neighbours)
+			for (UTile*& tileP : tile->neighbours)
 			{
 				tileP = nullptr;
 			}
@@ -130,34 +132,34 @@ UTile* AMapCreator::GetTileFormWorldPosition(FVector WorldPosition)
 	return GetTileFromGrid(x, y);
 }
 
-int AMapCreator::GetTotalPollution()
+const int AMapCreator::GetTotalPollution()
 {
 	int sumPollution = 0;
-	for (UTile* elem : gridMap)
+	for (UTile*& elem : gridMap)
 	{
-		sumPollution += elem->GetPollution();
+		if (elem->IsValidLowLevelFast())
+		{
+			sumPollution += elem->GetPollution();
+		}
 	}
+	//if (GEngine)
+	//	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Cyan, FString::FromInt(sumPollution));
 	return sumPollution;
 }
 
 void AMapCreator::CollectTax()
 {
-	TArray<ABaseBuilding*> buildings;
+	//TArray<ABaseBuilding*> buildings;
 	int taxCollected = 0;
-	for (UTile* tile : gridMap)
+	for (UTile*& tile : gridMap)
 	{
-		if (tile->GetBuilding()->IsValidLowLevel())
+		if (tile->GetBuilding()->IsValidLowLevelFast() && !tile->GetBuilding()->cashComp->IsUpgrading())
 		{
-			buildings.Add(tile->GetBuilding());
+			taxCollected += tile->GetBuilding()->cashComp->GetIncome(tile->GetBuilding()->state);
 		}
 	}
-	for (ABaseBuilding* building : buildings) {
-		if (!building->cashComp->IsUpgrading()) {
-			taxCollected += building->cashComp->GetIncome(building->state);
-
-		}
-	}
-	if (player != nullptr) {
+	if (player) 
+	{
 		player->AddCash(taxCollected);
 	}
 
@@ -176,14 +178,13 @@ void AMapCreator::RegisterBuilding()
 	}
 }
 
-TArray<UTile*> AMapCreator::FindTilesWithBuildings(ABaseBuilding* Building)
+void AMapCreator::FindTilesWithBuildings(ABaseBuilding* Building, TArray<UTile*> &Tiles)
 {
-	TArray<UTile*> tiles;
-	for (UTile* elem : gridMap) {
-		if (elem->GetBuilding() == Building) {
-			tiles.Add(elem);
+	for (UTile*& elem : gridMap) {
+		if (elem->IsValidLowLevelFast() && elem->GetBuilding() == Building) 
+		{
+			Tiles.Add(elem);
 		}
 	}
-	return tiles;
 }
 

@@ -17,8 +17,8 @@ void ABaseBuilding::BeginPlay() {
 
 void ABaseBuilding::OnMeshClicked(UPrimitiveComponent* Target, FKey ButtonPressed) {
 	GetStaticMeshComponent()->SetScalarParameterValueOnMaterials("Selection", 0.0f);
-	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, Target->GetAttachmentRootActor()->GetFName().ToString());
+	//if (GEngine)
+	//	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, Target->GetAttachmentRootActor()->GetFName().ToString());
 	UpdateUI();
 }
 
@@ -110,8 +110,8 @@ void ABaseBuilding::ActivateToGrid()
 		for (size_t x = 0; x < tileSizeX; x++)
 		{
 			offset += FVector(x * tileSize - tileSize * 0.5f, y * tileSize - tileSize * 0.5f, 0.0f) + GetActorLocation();
-			if (GEngine)
-				GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, offset.ToString());
+			//if (GEngine)
+			//	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, offset.ToString());
 			FHitResult hit(ForceInit);
 			GetWorld()->LineTraceSingleByChannel(hit, offset, GetActorUpVector() * -400.0f + offset, ECollisionChannel::ECC_Visibility);
 
