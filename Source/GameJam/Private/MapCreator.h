@@ -30,19 +30,20 @@ private:
 	UPROPERTY()
 		ADebugPlayer* player;
 	bool endActivted = false;
+	FTimerHandle taxTimer;
+
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite);
-	UMaterialParameterCollectionInstance* roadInstance;
+		UMaterialParameterCollectionInstance* roadInstance;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<UTile*> gridMap;
+		TArray<UTile*> gridMap;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite);
 	float gridSize;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite);
 	float taxInterval;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite);
 	bool isDebug;
-	FTimerHandle taxTimer;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite);
 	int winPollutionThreshold;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite);
@@ -71,5 +72,5 @@ public:
 	const int GetTotalPollution();
 	void CollectTax();
 	void RegisterBuilding();
-	void FindTilesWithBuildings(ABaseBuilding* Building, TArray<UTile*> &Tile);
+	void FindTilesWithBuildings(ABaseBuilding* Building, TArray<UTile*>& Tile);
 };

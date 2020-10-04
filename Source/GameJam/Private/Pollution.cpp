@@ -20,25 +20,22 @@ void UPollution::SwitchPollution(EBuildingState State)
 {
 	TArray<UTile*> affectedTiles;
 	TArray<UTile*> rangeTiles;
-	TArray<UTile*> buildingTiles;
+	UTile* startingTile;
 
 	ABaseBuilding* building = Cast<ABaseBuilding>(GetOwner());
 	UCustomGameInstance* gameInstance = Cast<UCustomGameInstance>(building->GetGameInstance());
 
 	if (gameInstance && building) {
-		gameInstance->map->FindTilesWithBuildings(building, buildingTiles);
-		for (UTile* t_p : buildingTiles)
+		startingTile = gameInstance->map->GetTileFormWorldPosition(building->GetActorLocation());
+		UTileExtension::GetTilesInRange(startingTile, rangeCurrent, rangeTiles);
+		//if (GEngine)
+		//	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Blue, FString::FromInt(rangeTiles.Num()));
+		for (UTile*& rt_p : rangeTiles)
 		{
-			UTileExtension::GetTilesInRange(t_p, rangeCurrent, rangeTiles);
-			if (GEngine)
-				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Blue, FString::FromInt(rangeTiles.Num()));
-			for (UTile*& rt_p : rangeTiles)
-			{
-				affectedTiles.AddUnique(rt_p);
-			}
+			affectedTiles.AddUnique(rt_p);
 		}
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::FromInt(affectedTiles.Num()));
+		//if (GEngine)
+		//	GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FString::FromInt(affectedTiles.Num()));
 		strenghtCurrent *= -1;
 		for (UTile*& at_p : affectedTiles) {
 			at_p->UpdatePollution(strenghtCurrent);
@@ -60,17 +57,11 @@ void UPollution::SwitchPollution(EBuildingState State)
 		}
 
 		affectedTiles.Empty();
-		buildingTiles.Empty();
 		rangeTiles.Empty();
-		gameInstance->map->FindTilesWithBuildings(building, buildingTiles);
-
-		for (UTile*& t_p : buildingTiles)
+		UTileExtension::GetTilesInRange(startingTile, rangeCurrent, rangeTiles);
+		for (UTile*& rt_p : rangeTiles)
 		{
-			UTileExtension::GetTilesInRange(t_p, rangeCurrent, rangeTiles);
-			for (UTile*& rt_p : rangeTiles)
-			{
-				affectedTiles.AddUnique(rt_p);
-			}
+			affectedTiles.AddUnique(rt_p);
 		}
 		for (UTile*& at_p : affectedTiles) {
 			at_p->UpdatePollution(strenghtCurrent);

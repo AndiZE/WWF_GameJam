@@ -4,7 +4,7 @@
 #include "Tile.h"
 #include "BaseBuilding.h"
 
-UTile::UTile() 
+UTile::UTile()
 {
 }
 
@@ -17,8 +17,11 @@ void UTile::SetNeigbours(UTile* Tile, ETileDirection direction)
 void UTile::SetBuilding(ABaseBuilding* NewBuilding)
 {
 	building = NewBuilding;
-	building->state = EBuildingState::Dirty;
-	building->pollutionComp->SwitchPollution(EBuildingState::Dirty);
+	if (building)
+	{
+		building->state = EBuildingState::Dirty;
+		building->pollutionComp->SwitchPollution(building->state);
+	}
 }
 
 void UTile::UpdatePollution(int Pollution)

@@ -30,7 +30,6 @@ private:
 	int strenghtCurrent;
 	int rangeCurrent;
 
-
 public:
 	// Sets default values for this component's properties
 	UPollution();

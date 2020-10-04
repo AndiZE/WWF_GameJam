@@ -15,6 +15,7 @@
 #include "Win.h"
 #include "LosePollution.h"
 #include "UObject/UObjectGlobals.h"
+#include "EngineUtils.h"
 
 // Sets default values
 AMapCreator::AMapCreator()
@@ -81,8 +82,13 @@ void AMapCreator::CreateGrid()
 	{
 		for (size_t x = 0; x < sizeX; x++)
 		{
-			UTile* tile = NewObject<UTile>();
-			UE_LOG(LogTemp, Warning,TEXT("Test"));
+			FString name = "Tile";
+			name.AppendInt(y * sizeX + x);
+			UTile* tile = NewObject<UTile>(this, FName(*name));
+			//UTile* tile = NewObject<UTile>(this, FName("Tile"));
+			//UTile* tile = NewObject<UTile>(this);
+			//UTile* tile = NewObject<UTile>();
+			//UE_LOG(LogTemp, Warning,TEXT("Test"));
 			tile->neighbours.SetNumUninitialized(4);
 			for (UTile*& tileP : tile->neighbours)
 			{
@@ -98,6 +104,7 @@ void AMapCreator::CreateGrid()
 			if (y > 0) {
 				tile->SetNeigbours(GetTileFromGrid(x, y - 1), ETileDirection::West);
 			}
+			//tile->AddToRoot();
 			gridMap.Add(tile);
 		}
 	}
@@ -158,7 +165,7 @@ void AMapCreator::CollectTax()
 			taxCollected += tile->GetBuilding()->cashComp->GetIncome(tile->GetBuilding()->state);
 		}
 	}
-	if (player) 
+	if (player)
 	{
 		player->AddCash(taxCollected);
 	}
@@ -169,19 +176,19 @@ void AMapCreator::RegisterBuilding()
 {
 	TArray<AActor*> buildings;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ABaseBuilding::StaticClass(), buildings);
-	for (AActor* obj : buildings)
+	for (TActorIterator<ABaseBuilding> ActorItr(GetWorld()); ActorItr; ++ActorItr)
 	{
-		ABaseBuilding* building = Cast<ABaseBuilding>(obj);
-		if (building != nullptr) {
+		ABaseBuilding* building = Cast<ABaseBuilding>(*ActorItr);
+		if (building) {
 			building->ActivateToGrid();
 		}
 	}
 }
 
-void AMapCreator::FindTilesWithBuildings(ABaseBuilding* Building, TArray<UTile*> &Tiles)
+void AMapCreator::FindTilesWithBuildings(ABaseBuilding* Building, TArray<UTile*>& Tiles)
 {
 	for (UTile*& elem : gridMap) {
-		if (elem->IsValidLowLevelFast() && elem->GetBuilding() == Building) 
+		if (elem->IsValidLowLevelFast() && elem->GetBuilding() != nullptr)
 		{
 			Tiles.Add(elem);
 		}

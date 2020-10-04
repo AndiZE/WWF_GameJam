@@ -24,16 +24,15 @@ class ABaseBuilding : public AStaticMeshActor
 	GENERATED_BODY()
 
 public:
-	ABaseBuilding();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UStaticMeshComponent* gruen = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UParticleSystemComponent* dust = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UCash* cashComp;
+		UCash* cashComp = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UPollution* pollutionComp;
+		UPollution* pollutionComp = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int tileSizeX;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -52,10 +51,11 @@ private:
 	UPROPERTY()
 		FTimerHandle decayTimer;
 	UPROPERTY()
-		ADebugPlayer* player;
+		ADebugPlayer* player = nullptr;
 	UPROPERTY()
-		UCustomGameInstance* gameInstance;
+		UCustomGameInstance* gameInstance = nullptr;
 public:
+	ABaseBuilding();
 	virtual void BeginPlay() override;
 	UFUNCTION()
 		void DowngradeBuilding();

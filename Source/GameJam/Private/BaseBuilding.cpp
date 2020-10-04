@@ -6,7 +6,7 @@
 #include "Tile.h"
 #include "CustomGameInstance.h"
 #include "Particles/ParticleSystemComponent.h"
-
+#include "TimerManager.h"
 
 void ABaseBuilding::BeginPlay() {
 	Super::BeginPlay();
@@ -26,10 +26,6 @@ void ABaseBuilding::DowngradeBuilding()
 {
 	//Clear timer after Call for reusing
 	GetWorldTimerManager().ClearTimer(decayTimer);
-	if (state == EBuildingState::Abbandoned)
-	{
-		return;
-	}
 	switch (state)
 	{
 	case EBuildingState::Green:
@@ -40,8 +36,9 @@ void ABaseBuilding::DowngradeBuilding()
 		state = EBuildingState::Abbandoned;
 		GetWorldTimerManager().ClearTimer(decayTimer);
 		break;
-		//case EBuildingState::Abbandoned:
-		//	break;
+		case EBuildingState::Abbandoned:
+			return;
+			break;
 	}
 	GetStaticMeshComponent()->SetScalarParameterValueOnMaterials("DirtOverlay", 0.0f);
 	pollutionComp->SwitchPollution(state);
@@ -117,6 +114,14 @@ void ABaseBuilding::ActivateToGrid()
 
 			if (&hit != nullptr) {
 				gameInstance->map->GetTileFormWorldPosition(hit.Location)->SetBuilding(this);
+				//if (gameInstance->map->GetTileFormWorldPosition(hit.Location)->IsValidLowLevel())
+				//{
+				//	UE_LOG(LogTemp, Warning, TEXT("TRUE"));
+				//}
+				//else {
+				//	UE_LOG(LogTemp, Warning, TEXT("FALSE"));
+
+				//}
 				GetWorldTimerManager().SetTimer(decayTimer, this, &ABaseBuilding::DowngradeBuilding, decayTime, false);
 				gruen->SetVisibility(false);
 			}
@@ -132,7 +137,9 @@ ABaseBuilding::ABaseBuilding()
 	dust = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Dust"));
 	dust->SetupAttachment(RootComponent);
 	pollutionComp = CreateDefaultSubobject<UPollution>(TEXT("Pollution"));
+	AddOwnedComponent(pollutionComp);
 	cashComp = CreateDefaultSubobject<UCash>(TEXT("Cash"));
+	AddOwnedComponent(cashComp);
 	tileSizeX = 1;
 	tileSizeY = 1;
 	tileSize = 200.0f;
