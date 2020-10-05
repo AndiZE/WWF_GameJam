@@ -16,7 +16,7 @@ class UCustomGameInstance : public UGameInstance
 	GENERATED_BODY()
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		AMapCreator* map;
+		AMapCreator* map = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FVector camMinPos;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

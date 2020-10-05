@@ -13,6 +13,11 @@ void ABaseBuilding::BeginPlay() {
 	player = Cast<ADebugPlayer>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	GetStaticMeshComponent()->OnClicked.AddDynamic(this, &ABaseBuilding::OnMeshClicked);
 	gameInstance = Cast<UCustomGameInstance>(GetGameInstance());
+	//if (pollutionComp)
+	//{
+	//	if (GEngine)
+	//		GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red,FString::FromInt(pollutionComp->rangeDirty));
+	//}
 }
 
 void ABaseBuilding::OnMeshClicked(UPrimitiveComponent* Target, FKey ButtonPressed) {
@@ -36,9 +41,9 @@ void ABaseBuilding::DowngradeBuilding()
 		state = EBuildingState::Abbandoned;
 		GetWorldTimerManager().ClearTimer(decayTimer);
 		break;
-		case EBuildingState::Abbandoned:
-			return;
-			break;
+	case EBuildingState::Abbandoned:
+		return;
+		break;
 	}
 	GetStaticMeshComponent()->SetScalarParameterValueOnMaterials("DirtOverlay", 0.0f);
 	pollutionComp->SwitchPollution(state);
@@ -137,9 +142,9 @@ ABaseBuilding::ABaseBuilding()
 	dust = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Dust"));
 	dust->SetupAttachment(RootComponent);
 	pollutionComp = CreateDefaultSubobject<UPollution>(TEXT("Pollution"));
-	AddOwnedComponent(pollutionComp);
+	//AddOwnedComponent(pollutionComp);
 	cashComp = CreateDefaultSubobject<UCash>(TEXT("Cash"));
-	AddOwnedComponent(cashComp);
+	//AddOwnedComponent(cashComp);
 	tileSizeX = 1;
 	tileSizeY = 1;
 	tileSize = 200.0f;

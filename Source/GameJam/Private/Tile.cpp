@@ -20,7 +20,9 @@ void UTile::SetBuilding(ABaseBuilding* NewBuilding)
 	if (building)
 	{
 		building->state = EBuildingState::Dirty;
-		building->pollutionComp->SwitchPollution(building->state);
+
+		if (building->pollutionComp->IsValidLowLevel())
+			building->pollutionComp->SwitchPollution(building->state);
 	}
 }
 

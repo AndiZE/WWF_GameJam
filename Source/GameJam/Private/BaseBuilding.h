@@ -25,13 +25,13 @@ class ABaseBuilding : public AStaticMeshActor
 
 public:
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		UStaticMeshComponent* gruen = nullptr;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		UParticleSystemComponent* dust = nullptr;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		UCash* cashComp = nullptr;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		UPollution* pollutionComp = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int tileSizeX;

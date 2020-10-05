@@ -4,9 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "BuildingState.h"
 #include "Pollution.generated.h"
-
-enum class EBuildingState : uint8;
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class UPollution : public UActorComponent
@@ -15,43 +14,31 @@ class UPollution : public UActorComponent
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int strenghtClean;
+		int strenghtClean = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int rangeClean;
+		int rangeClean = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int strenghtDirty;
+		int strenghtDirty = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int rangeDirty;
+		int rangeDirty = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int strenghtAbbadoned;
+		int strenghtAbbadoned = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int rangeAbbadoned;
+		int rangeAbbadoned = 0;
 private:
-	int strenghtCurrent;
-	int rangeCurrent;
+	int strenghtCurrent = 0;;
+	int rangeCurrent = 0;
 
 public:
 	// Sets default values for this component's properties
 	UPollution();
 	void SwitchPollution(EBuildingState State);
-	void RemovePollution();
-	UFUNCTION(BlueprintPure)
+	UFUNCTION()
 	const int GetCurrentPollution() {
 		return strenghtCurrent;
 	}
-	UFUNCTION(BlueprintPure)
+	UFUNCTION()
 	const int GetCurrentRange() {
 		return rangeCurrent;
 	}
-
-
-	//protected:
-	//	// Called when the game starts
-	//	virtual void BeginPlay() override;
-	//
-	//public:	
-	//	// Called every frame
-	//	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
-
 };
