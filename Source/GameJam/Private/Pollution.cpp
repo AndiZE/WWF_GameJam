@@ -12,6 +12,8 @@ UPollution::UPollution()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
+	rangeCurrent = 0;
+	strenghtCurrent = 0;
 	// ...
 }
 
@@ -22,7 +24,8 @@ void UPollution::SwitchPollution(EBuildingState State)
 	UTile* startingTile;
 
 	ABaseBuilding* building = Cast<ABaseBuilding>(GetOwner());
-	UCustomGameInstance* gameInstance = Cast<UCustomGameInstance>(building->GetGameInstance());
+	UCustomGameInstance* gameInstance = Cast<UCustomGameInstance>(GetOwner()->GetGameInstance());
+
 
 	if (gameInstance && building) {
 		startingTile = gameInstance->map->GetTileFormWorldPosition(building->GetActorLocation());
@@ -58,6 +61,11 @@ void UPollution::SwitchPollution(EBuildingState State)
 		affectedTiles.Empty();
 		rangeTiles.Empty();
 		UTileExtension::GetTilesInRange(startingTile, rangeCurrent, rangeTiles);
+
+		//if (IsValid()) {
+		//	if (GEngine)
+		//		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, "Valid");
+		//}
 		for (UTile*& rt_p : rangeTiles)
 		{
 			affectedTiles.AddUnique(rt_p);

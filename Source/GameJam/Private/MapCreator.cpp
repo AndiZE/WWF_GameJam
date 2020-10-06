@@ -194,4 +194,3 @@ void AMapCreator::FindTilesWithBuildings(ABaseBuilding* Building, TArray<UTile*>
 		}
 	}
 }
-

@@ -26,19 +26,22 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int rangeAbbadoned = 0;
 private:
-	int strenghtCurrent = 0;;
-	int rangeCurrent = 0;
+	int strenghtCurrent;
+	int rangeCurrent;
 
 public:
 	// Sets default values for this component's properties
 	UPollution();
-	void SwitchPollution(EBuildingState State);
 	UFUNCTION()
-	const int GetCurrentPollution() {
+	void SwitchPollution(EBuildingState State);
+
+	UFUNCTION(BlueprintPure)
+	int GetCurrentPollution() {
 		return strenghtCurrent;
 	}
-	UFUNCTION()
-	const int GetCurrentRange() {
+
+	UFUNCTION(BlueprintPure)
+	int GetCurrentRange() {
 		return rangeCurrent;
 	}
 };

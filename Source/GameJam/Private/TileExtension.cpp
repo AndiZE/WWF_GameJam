@@ -5,19 +5,18 @@
 
 void UTileExtension::GetTilesInRange(UTile* StartTile, const int Range, TArray<UTile*> &outTiles) {
 	TArray<UTile*> openList;
-	//TArray<UTile*> savedList;
-	int counter = Range;
+	//int counter = Range;
 
 	openList.Add(StartTile);
-	while (counter > 0) {
-		counter--;
+	for (size_t counter = 0; counter < Range; counter++)
+	{
 		for (UTile*& t_p : openList)
 		{
-			if (t_p->IsValidLowLevelFast())
+			if (IsValid(t_p))
 			{
 				for (UTile*& tn_p : t_p->neighbours)
 				{
-					if (tn_p->IsValidLowLevelFast()) {
+					if (IsValid(tn_p)) {
 						outTiles.AddUnique(tn_p);
 					}
 				}
